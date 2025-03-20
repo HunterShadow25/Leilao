@@ -7,12 +7,14 @@
  *
  * @author Adm
  */
+import com.mysql.jdbc.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutosDAO {
 
@@ -36,14 +38,36 @@ public class ProdutosDAO {
             prep.execute();
             JOptionPane.showMessageDialog(null, "Dados cadastrados com sucesso");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "ERRO " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "erro no cadastro confime se os dados inseridos são validos\n caso o erro persistir reinicie o programa");
         }
 
     }
 
-    public ArrayList<ProdutosDTO> listarProdutos() {
+    public List<ProdutosDTO> listarProdutos() {
+        conn = new conectaDAO().connectDB();
 
-        return listagem;
+        String sql = "Select * from produtos";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+            List<ProdutosDTO> lista = new ArrayList();
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setStatus(rs.getString("status"));
+                produto.setValor(rs.getInt("valor"));
+                lista.add(produto);
+            }
+            return lista;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 
 }
