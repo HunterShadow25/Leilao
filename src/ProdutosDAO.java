@@ -68,5 +68,20 @@ public class ProdutosDAO {
         }
 
     }
-
+public void venderProduto(int id){
+    conn = new conectaDAO().connectDB();
+    String sql = "UPDATE produtos SET status = 'Vendido' WHERE id =(?)";
+            
+    try{
+        prep = conn.prepareStatement(sql);
+        prep.setInt(1, id);
+        prep.execute();
+        
+    }catch(SQLException e){
+        
+    }
+    
+    
+}
+    
 }
