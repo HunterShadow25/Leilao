@@ -7,7 +7,6 @@
  *
  * @author Adm
  */
-
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -20,7 +19,6 @@ public class ProdutosDAO {
 
     Connection conn;
     PreparedStatement prep;
-   
 
     public void cadastrarProduto(ProdutosDTO produto) {
 
@@ -68,20 +66,45 @@ public class ProdutosDAO {
         }
 
     }
-public void venderProduto(int id){
-    conn = new conectaDAO().connectDB();
-    String sql = "UPDATE produtos SET status = 'Vendido' WHERE id =(?)";
-            
-    try{
-        prep = conn.prepareStatement(sql);
-        prep.setInt(1, id);
-        prep.execute();
-        
-    }catch(SQLException e){
-        
+
+    public void venderProduto(int id) {
+        conn = new conectaDAO().connectDB();
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id =(?)";
+
+        try {
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            prep.execute();
+
+        } catch (SQLException e) {
+
+        }
+
     }
-    
-    
-}
-    
+
+    public List<ProdutosDTO> listarProdutosVendidos() {
+        conn = new conectaDAO().connectDB();
+
+        String sql = "Select * from produtos Where status = 'Vendido'";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            List<ProdutosDTO> lista = new ArrayList();
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setStatus(rs.getString("status"));
+                produto.setValor(rs.getInt("valor"));
+                lista.add(produto);
+            }
+            return lista;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+    }
 }
